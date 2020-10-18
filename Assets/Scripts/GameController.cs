@@ -31,6 +31,11 @@ public class GameController : MonoBehaviour
     public GameObject startInfo;
 
     string playerSide;
+    string computerSide;
+    public bool playerMove;
+    public float delay;
+    private int value;
+
     int moveCount;
 
     void Awake()
@@ -39,8 +44,27 @@ public class GameController : MonoBehaviour
         gameOverPanel.SetActive(false);
         moveCount = 0;
         restartButton.SetActive(false);
-        
+        playerMove = true;
     }
+
+    void Update()
+    {
+        if (playerMove == false)
+        {
+            delay += delay * Time.deltaTime;
+            if (delay >= 100)
+            {
+                value = Random.Range(0, buttonList.Length);
+                if (buttonList[value].GetComponentInParent<Button>().interactable == true)
+                {
+                    buttonList[value].text = GetComputerSide();
+                    buttonList[value].GetComponentInParent<Button>().interactable = false;
+                    EndTurn();
+                }
+            }    
+        }
+    }
+
 
     void SetGameControllerReferenceOnButtons()
     {
@@ -55,10 +79,12 @@ public class GameController : MonoBehaviour
         playerSide = startingSide;
         if (playerSide == "X")
         {
+            computerSide = "O";
             SetPlayerColors(playerX, playerO);
         }
         else
         {
+            computerSide = "X";
             SetPlayerColors(playerO, playerX);
         }
 
@@ -76,6 +102,12 @@ public class GameController : MonoBehaviour
     {
         return playerSide;
     }
+
+    public string GetComputerSide()
+    {
+        return computerSide;
+    }
+
 
     public void EndTurn()
     {
@@ -123,6 +155,48 @@ public class GameController : MonoBehaviour
             GameOver(playerSide);
         }
 
+
+        if (buttonList[0].text == computerSide && buttonList[1].text == computerSide && buttonList[2].text == computerSide)
+        {
+            GameOver(computerSide);
+        }
+
+        else if (buttonList[3].text == computerSide && buttonList[4].text == computerSide && buttonList[5].text == computerSide)
+        {
+            GameOver(computerSide);
+        }
+
+        else if (buttonList[6].text == computerSide && buttonList[7].text == computerSide && buttonList[8].text == computerSide)
+        {
+            GameOver(computerSide);
+        }
+
+        else if (buttonList[0].text == computerSide && buttonList[3].text == computerSide && buttonList[6].text == computerSide)
+        {
+            GameOver(computerSide);
+        }
+
+        else if (buttonList[1].text == computerSide && buttonList[4].text == computerSide && buttonList[7].text == computerSide)
+        {
+            GameOver(computerSide);
+        }
+
+        else if (buttonList[2].text == computerSide && buttonList[5].text == computerSide && buttonList[8].text == computerSide)
+        {
+            GameOver(computerSide);
+        }
+
+        else if (buttonList[0].text == computerSide && buttonList[4].text == computerSide && buttonList[8].text == computerSide)
+        {
+            GameOver(computerSide);
+        }
+
+        else if (buttonList[2].text == computerSide && buttonList[4].text == computerSide && buttonList[6].text == computerSide)
+        {
+            GameOver(computerSide);
+        }
+
+
         else if (moveCount >= 9)
         {
             GameOver("draw");
@@ -131,6 +205,7 @@ public class GameController : MonoBehaviour
         else
         {
             ChangeSides();
+            delay = 10;
         }
     }
 
@@ -161,7 +236,7 @@ public class GameController : MonoBehaviour
 
     void ChangeSides()
     {
-        playerSide = (playerSide == "X") ? "O" : "X";
+        // playerSide = (playerSide == "X") ? "O" : "X";
         // If playerSide is "X", playerSide now equals "O". Else, if playerSide is not "X", then make it "X"
         // From https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/conditional-operator
         // The conditional operator ?:, also known as the ternary conditional operator, evaluates a Boolean expression and returns the result of one of the two expressions,
@@ -171,8 +246,10 @@ public class GameController : MonoBehaviour
         //The condition expression must evaluate to true or false. If condition evaluates to true, the consequent expression is evaluated, and its result becomes the result
         // of the operation. If condition evaluates to false, the alternative expression is evaluated,
         // and its result becomes the result of the operation. Only consequent or alternative is evaluated.
+        playerMove = (playerMove == true) ? false : true;
 
-        if (playerSide == "X")
+        // if (playerSide == "X")
+        if (playerMove == true)
         {
             SetPlayerColors(playerX, playerO);
         }
@@ -196,6 +273,8 @@ public class GameController : MonoBehaviour
         SetPlayerButtons(true);
         SetPlayerColorsInactive();
         startInfo.SetActive(true);
+        playerMove = true;
+        delay = 10;
 
         for (int i = 0; i < buttonList.Length; i++)
         {
